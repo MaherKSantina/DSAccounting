@@ -34,7 +34,7 @@ extension Invoice_InvoiceItemRow: TwoModelJoin {
     }
 
     public static var join: JoinRelationship {
-        return JoinRelationship(type: .left, key1: Model2.CodingKeys.invoiceID.rawValue, key2: Model1.CodingKeys.id.rawValue)
+        return JoinRelationship(type: .left, key1: Model1.CodingKeys.id.rawValue, key2: Model2.CodingKeys.invoiceID.rawValue)
     }
 }
 
