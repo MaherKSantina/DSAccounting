@@ -9,7 +9,7 @@ import Vapor
 import FluentMySQL
 import DSCore
 
-struct QuotationItemRow {
+public struct QuotationItemRow {
     enum CodingKeys: String, CodingKey, CaseIterable {
         case id
         case quotationID
@@ -37,7 +37,7 @@ struct QuotationItemRow {
 }
 
 extension QuotationItemRow: DSModel {
-    static func routePath() throws -> String {
+    public static func routePath() throws -> String {
         return "quotationItem"
     }
 }

@@ -68,6 +68,7 @@ public class DSAccountingMain {
 
         migrations.add(model: QuotationRow.self, database: .mysql)
         migrations.add(migration: QuotationItemRow.self, database: .mysql)
+        migrations.add(migration: Quotation_QuotationItemRow.self, database: .mysql)
 
         services.register(migrations)
     }
