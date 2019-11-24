@@ -53,7 +53,7 @@ extension Quotation_QuotationItemRow: DSModelView {
 }
 
 extension Array where Element == Quotation_QuotationItemRow {
-    func toFullList() -> [QuotationRow.Full] {
+    public func toFullList() -> [QuotationRow.Full] {
         let items = self.filter{ $0.Quotation_id != nil }
         return Dictionary(grouping: items) { $0.quotationRow }.map { (arg) -> QuotationRow.Full in
 

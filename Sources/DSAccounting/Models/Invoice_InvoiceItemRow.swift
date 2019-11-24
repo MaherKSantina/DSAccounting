@@ -60,7 +60,7 @@ extension Invoice_InvoiceItemRow: DSModelView {
 }
 
 extension Array where Element == Invoice_InvoiceItemRow {
-    func toFullList() -> [InvoiceRow.Full] {
+    public func toFullList() -> [InvoiceRow.Full] {
         let items = self.filter{ $0.Invoice_id != nil }
         return Dictionary(grouping: items) { $0.invoiceRow }.map { (arg) -> InvoiceRow.Full in
 
