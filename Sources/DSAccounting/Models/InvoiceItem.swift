@@ -41,4 +41,6 @@ extension InvoiceItemRow: DSModel {
     public static func routePath() throws -> String {
         return "invoiceItem"
     }
+
+    public static var entity: String = "InvoiceItem"
 }

@@ -40,4 +40,6 @@ extension QuotationItemRow: DSModel {
     public static func routePath() throws -> String {
         return "quotationItem"
     }
+
+    public static var entity: String = "QuotationItem"
 }
