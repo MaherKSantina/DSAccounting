@@ -35,6 +35,36 @@ public struct InvoiceItemRow {
         self.unitPrice = unitPrice
         self.totalPrice = totalPrice
     }
+
+    public init?(invoiceInvoiceItemRow: Invoice_InvoiceItemRow) {
+        guard let invoiceID = invoiceInvoiceItemRow.InvoiceItem_invoiceID, let name = invoiceInvoiceItemRow.InvoiceItem_name, let quantity = invoiceInvoiceItemRow.InvoiceItem_quantity, let unitPrice = invoiceInvoiceItemRow.InvoiceItem_unitPrice, let totalPrice = invoiceInvoiceItemRow.InvoiceItem_totalPrice else { return nil }
+        self.id = invoiceInvoiceItemRow.InvoiceItem_id
+        self.name = name
+        self.invoiceID = invoiceID
+        self.quantity = quantity
+        self.unitPrice = unitPrice
+        self.totalPrice = totalPrice
+    }
+
+    public struct Post: Content {
+        public var id: Int?
+        public var name: String
+        public var quantity: Double
+        public var unitPrice: Double
+        public var totalPrice: Double
+
+        public init(id: Int?, name: String, quantity: Double, unitPrice: Double, totalPrice: Double) {
+            self.id = id
+            self.name = name
+            self.quantity = quantity
+            self.unitPrice = unitPrice
+            self.totalPrice = totalPrice
+        }
+
+        public func invoiceItemRow(invoiceID: InvoiceRow.ID) -> InvoiceItemRow {
+            return InvoiceItemRow(id: id, invoiceID: invoiceID, name: name, quantity: quantity, unitPrice: unitPrice, totalPrice: totalPrice)
+        }
+    }
 }
 
 extension InvoiceItemRow: DSModel {
@@ -43,4 +73,10 @@ extension InvoiceItemRow: DSModel {
     }
 
     public static var entity: String = "InvoiceItem"
+}
+
+extension InvoiceItemRow: Equatable {
+    public static func == (lhs: InvoiceItemRow, rhs: InvoiceItemRow) -> Bool {
+        return lhs.id == rhs.id
+    }
 }

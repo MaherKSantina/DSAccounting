@@ -43,3 +43,9 @@ extension QuotationItemRow: DSModel {
 
     public static var entity: String = "QuotationItem"
 }
+
+extension QuotationItemRow: Equatable {
+    public static func == (lhs: QuotationItemRow, rhs: QuotationItemRow) -> Bool {
+        return lhs.id == rhs.id
+    }
+}

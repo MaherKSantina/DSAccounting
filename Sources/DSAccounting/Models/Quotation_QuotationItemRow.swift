@@ -20,6 +20,15 @@ public struct Quotation_QuotationItemRow {
     public var QuotationItem_quantity: Double
     public var QuotationItem_unitPrice: Double
     public var QuotationItem_totalPrice: Double
+
+    public var quotationRow: QuotationRow {
+        return QuotationRow(id: Quotation_id, totalPrice: Quotation_totalPrice)
+    }
+
+    public var quotationItemRow: QuotationItemRow {
+        return QuotationItemRow(id: QuotationItem_id, quotationID: QuotationItem_quotationID, name: QuotationItem_name, quantity: QuotationItem_quantity, unitPrice: QuotationItem_unitPrice, totalPrice: QuotationItem_totalPrice)
+    }
+    
 }
 
 extension Quotation_QuotationItemRow: TwoModelJoin {
@@ -41,4 +50,15 @@ extension Quotation_QuotationItemRow: TwoModelJoin {
 
 extension Quotation_QuotationItemRow: DSModelView {
     public typealias Database = MySQLDatabase
+}
+
+extension Array where Element == Quotation_QuotationItemRow {
+    func toFullList() -> [QuotationRow.Full] {
+        let items = self.filter{ $0.Quotation_id != nil }
+        return Dictionary(grouping: items) { $0.quotationRow }.map { (arg) -> QuotationRow.Full in
+
+            let (key, value) = arg
+            return QuotationRow.Full(id: key.id, totalPrice: key.totalPrice, items: value.map{ $0.quotationItemRow })
+        }
+    }
 }
