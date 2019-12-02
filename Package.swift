@@ -25,6 +25,6 @@ let package = Package(
             dependencies: ["Vapor", "DSCore", "FluentMySQL"]),
         .testTarget(
             name: "DSAccountingTests",
-            dependencies: ["DSAccounting"]),
+            dependencies: ["DSAccounting", "Vapor", "FluentMySQL"]),
     ]
 )
