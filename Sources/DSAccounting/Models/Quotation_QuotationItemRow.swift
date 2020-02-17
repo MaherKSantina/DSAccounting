@@ -31,34 +31,34 @@ public struct Quotation_QuotationItemRow {
     
 }
 
-extension Quotation_QuotationItemRow: TwoModelJoin {
-    public typealias Model1 = QuotationRow
-    public typealias Model2 = QuotationItemRow
-
-    public static var model1selectFields: [String] {
-        return QuotationRow.CodingKeys.allCases.map{ $0.rawValue }
-    }
-
-    public static var model2selectFields: [String] {
-        return QuotationItemRow.CodingKeys.allCases.map{ $0.rawValue }
-    }
-
-    public static var join: JoinRelationship {
-        return JoinRelationship(type: .left, key1: Model1.CodingKeys.id.rawValue, key2: Model2.CodingKeys.quotationID.rawValue)
-    }
-}
-
-extension Quotation_QuotationItemRow: DSModelView {
-    public typealias Database = MySQLDatabase
-}
-
-extension Array where Element == Quotation_QuotationItemRow {
-    public func toFullList() -> [QuotationRow.Full] {
-        let items = self.filter{ $0.Quotation_id != nil }
-        return Dictionary(grouping: items) { $0.quotationRow }.map { (arg) -> QuotationRow.Full in
-
-            let (key, value) = arg
-            return QuotationRow.Full(id: key.id, totalPrice: key.totalPrice, items: value.map{ $0.quotationItemRow })
-        }
-    }
-}
+//extension Quotation_QuotationItemRow: TwoModelJoin {
+//    public typealias Model1 = QuotationRow
+//    public typealias Model2 = QuotationItemRow
+//
+//    public static var model1selectFields: [String] {
+//        return QuotationRow.CodingKeys.allCases.map{ $0.rawValue }
+//    }
+//
+//    public static var model2selectFields: [String] {
+//        return QuotationItemRow.CodingKeys.allCases.map{ $0.rawValue }
+//    }
+//
+//    public static var join: JoinRelationship {
+//        return JoinRelationship(type: .left, key1: Model1.CodingKeys.id.rawValue, key2: Model2.CodingKeys.quotationID.rawValue)
+//    }
+//}
+//
+//extension Quotation_QuotationItemRow: DSModelView {
+//    public typealias Database = MySQLDatabase
+//}
+//
+//extension Array where Element == Quotation_QuotationItemRow {
+//    public func toFullList() -> [QuotationRow.Full] {
+//        let items = self.filter{ $0.Quotation_id != nil }
+//        return Dictionary(grouping: items) { $0.quotationRow }.map { (arg) -> QuotationRow.Full in
+//
+//            let (key, value) = arg
+//            return QuotationRow.Full(id: key.id, totalPrice: key.totalPrice, items: value.map{ $0.quotationItemRow })
+//        }
+//    }
+//}

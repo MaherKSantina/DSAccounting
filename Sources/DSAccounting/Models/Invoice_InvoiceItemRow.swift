@@ -10,6 +10,18 @@ import DSCore
 import FluentMySQL
 
 public struct Invoice_InvoiceItemRow {
+
+    enum CodingKeys: String, CodingKey {
+        case Invoice_id
+        case Invoice_totalPrice
+        case InvoiceItem_id
+        case InvoiceItem_invoiceID
+        case InvoiceItem_name
+        case InvoiceItem_quantity
+        case InvoiceItem_unitPrice
+        case InvoiceItem_totalPrice
+    }
+
     public var Invoice_id: Int?
     public var Invoice_totalPrice: Double
 
@@ -20,27 +32,33 @@ public struct Invoice_InvoiceItemRow {
     public var InvoiceItem_unitPrice: Double?
     public var InvoiceItem_totalPrice: Double?
 
-    public var invoiceRow: InvoiceRow {
-        return InvoiceRow(id: Invoice_id, totalPrice: Invoice_totalPrice)
+    var invoiceItem: Invoice.Item? {
+        guard let id = InvoiceItem_id,
+            let name = InvoiceItem_name,
+            let quantity = InvoiceItem_quantity,
+            let unitPrice = InvoiceItem_unitPrice,
+            let totalPrice = InvoiceItem_totalPrice else { return nil }
+        return .init(id: id, name: name, quantity: quantity, unitPrice: unitPrice, totalPrice: totalPrice)
     }
-
-    public var invoiceItemRow: InvoiceItemRow? {
-        return InvoiceItemRow(invoiceInvoiceItemRow: self)
-    }
-
-    public static func find(id: Int, on conn: MySQLConnection) -> Future<[Invoice_InvoiceItemRow]> {
-        let parameters = [
-            DSQueryParameter(key: "Invoice_id", operation: .equal, value: id),
-        ]
-
-        return Invoice_InvoiceItemRow.query(onlyOne: false).withParameters(parameters: parameters).all(on: conn)
-    }
-    
 }
 
-extension Invoice_InvoiceItemRow: TwoModelJoin {
-    public typealias Model1 = InvoiceRow
-    public typealias Model2 = InvoiceItemRow
+extension Invoice_InvoiceItemRow: DSNModelView {
+    public static var tables: [DSViewTable] {
+        return [
+            DSViewTable(name: InvoiceRow.entity, fields: InvoiceRow.CodingKeys.allCases.map{ $0.rawValue }),
+            DSViewTable(name: InvoiceItemRow.entity, fields: InvoiceItemRow.CodingKeys.allCases.map{ $0.rawValue })
+        ]
+    }
+
+    public static var mainTableName: String {
+        return tables.first!.name
+    }
+
+    public static var joins: [DSViewJoin] {
+        return [
+            DSViewJoin(type: .left, foreignTable: InvoiceItemRow.entity, foreignKey: InvoiceItemRow.CodingKeys.invoiceID.rawValue, mainTable: mainTableName, mainTableKey: InvoiceRow.CodingKeys.id.rawValue)
+        ]
+    }
 
     public static var model1selectFields: [String] {
         return InvoiceRow.CodingKeys.allCases.map{ $0.rawValue }
@@ -49,23 +67,19 @@ extension Invoice_InvoiceItemRow: TwoModelJoin {
     public static var model2selectFields: [String] {
         return InvoiceItemRow.CodingKeys.allCases.map{ $0.rawValue }
     }
-
-    public static var join: JoinRelationship {
-        return JoinRelationship(type: .left, key1: Model1.CodingKeys.id.rawValue, key2: Model2.CodingKeys.invoiceID.rawValue)
-    }
-}
-
-extension Invoice_InvoiceItemRow: DSModelView {
-    public typealias Database = MySQLDatabase
 }
 
 extension Array where Element == Invoice_InvoiceItemRow {
-    public func toFullList() -> [InvoiceRow.Full] {
+    public func toFullList() -> [Invoice] {
         let items = self.filter{ $0.Invoice_id != nil }
-        return Dictionary(grouping: items) { $0.invoiceRow }.map { (arg) -> InvoiceRow.Full in
-
-            let (key, value) = arg
-            return InvoiceRow.Full(id: key.id, totalPrice: key.totalPrice, items: value.map{ $0.invoiceItemRow }.compactMap{ $0 })
+        return Dictionary(grouping: items) { $0.Invoice_id }.map { (arg) -> Invoice in
+            return arg.value.toOneItem
         }
+    }
+
+    public var toOneItem: Invoice {
+        let items = self.compactMap{ $0.invoiceItem }
+        let invoice = self.first!
+        return Invoice(id: invoice.Invoice_id, totalPrice: invoice.Invoice_totalPrice, items: items)
     }
 }

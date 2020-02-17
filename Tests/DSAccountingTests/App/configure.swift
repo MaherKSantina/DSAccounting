@@ -29,6 +29,6 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
 
         let auth = DSAccountingMain()
         var migrations = MigrationConfig()
-        try auth.accountingConfigure(migrations: &migrations)
+        try auth.configure(migrations: &migrations)
         services.register(migrations)
 }
