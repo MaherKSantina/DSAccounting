@@ -11,7 +11,7 @@ import FluentMySQL
 
 public struct Invoice_InvoiceItemRow {
 
-    enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case Invoice_id
         case Invoice_totalPrice
         case InvoiceItem_id

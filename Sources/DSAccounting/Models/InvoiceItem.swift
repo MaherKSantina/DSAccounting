@@ -11,7 +11,7 @@ import DSCore
 
 public struct InvoiceItemRow {
 
-    enum CodingKeys: String, CodingKey, CaseIterable {
+    public enum CodingKeys: String, CodingKey, CaseIterable {
         case id
         case name
         case invoiceID

@@ -12,7 +12,7 @@ import DSCore
 
 public struct Invoice: Content {
 
-    enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case id
         case totalPrice
         case items
