@@ -61,7 +61,7 @@ public struct Invoice: Content {
 
 public struct InvoiceRow {
 
-    enum CodingKeys: String, CodingKey, CaseIterable {
+    public enum CodingKeys: String, CodingKey, CaseIterable {
         case id
         case totalPrice
     }
